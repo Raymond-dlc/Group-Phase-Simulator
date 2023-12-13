@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Group Stage Simulator</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Mr. Simulator</string>
+    <string name="nav_header_subtitle">Let\'s get some results!</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_simulator">Simulator</string>
+    <string name="menu_teams">Teams</string>
+    <string name="menu_results">Results</string>
+</resources>
