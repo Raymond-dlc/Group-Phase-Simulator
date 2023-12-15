@@ -3,23 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_simulator">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.oceanscurse.groupstagesimulator.ui.home.HomeFragment"
+        android:id="@+id/nav_simulator"
+        android:name="com.oceanscurse.groupstagesimulator.ui.simulator.SimulatorFragment"
         android:label="@string/menu_simulator"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_simulator" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.oceanscurse.groupstagesimulator.ui.gallery.GalleryFragment"
+        android:id="@+id/nav_teams"
+        android:name="com.oceanscurse.groupstagesimulator.ui.teams.TeamsFragment"
         android:label="@string/menu_teams"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_teams" >
+        <action
+            android:id="@+id/action_nav_teams_to_teamDetailsFragment"
+            app:destination="@id/nav_team_details" />
+    </fragment>
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.oceanscurse.groupstagesimulator.ui.slideshow.SlideshowFragment"
+        android:id="@+id/nav_results"
+        android:name="com.oceanscurse.groupstagesimulator.ui.results.ResultsFragment"
         android:label="@string/menu_results"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_results" />
+
+    <fragment
+        android:id="@+id/nav_team_details"
+        android:name="com.oceanscurse.groupstagesimulator.ui.teams.TeamDetailsFragment"
+        android:label="fragment_team_details"
+        tools:layout="@layout/fragment_team_details" />
 </navigation>

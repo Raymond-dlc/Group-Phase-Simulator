@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.teams.TeamDetailsFragment">
+
+    <ImageView
+        android:id="@+id/iv_team_image"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/content_description_team_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_1" />
+
+    <ImageView
+        android:id="@+id/btn_previous_logo"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:contentDescription="@string/content_description_team_image_previous"
+        android:padding="12dp"
+        android:scaleX="-1"
+        android:tint="@color/icon_grey"
+        app:layout_constraintBottom_toBottomOf="@id/iv_team_image"
+        app:layout_constraintEnd_toStartOf="@id/iv_team_image"
+        app:layout_constraintTop_toTopOf="@id/iv_team_image"
+        app:srcCompat="@drawable/ic_arrow_right_small" />
+
+    <ImageView
+        android:id="@+id/btn_next_logo"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:contentDescription="@string/content_description_team_image_next"
+        android:padding="12dp"
+        android:tint="@color/icon_grey"
+        app:layout_constraintBottom_toBottomOf="@id/iv_team_image"
+        app:layout_constraintStart_toEndOf="@id/iv_team_image"
+        app:layout_constraintTop_toTopOf="@id/iv_team_image"
+        app:srcCompat="@drawable/ic_arrow_right_small" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:background="@color/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_next_logo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:layout_constraintEnd_toEndOf="@+id/iv_team_image"
+        app:layout_constraintStart_toStartOf="@+id/iv_team_image"
+        app:layout_constraintTop_toBottomOf="@+id/iv_team_image">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etv_team_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:hint="@string/teams_hint_team_name"
+            android:maxLength="20" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_add_players"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/teams_add_players"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

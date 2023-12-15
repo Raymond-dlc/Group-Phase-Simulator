@@ -9,4 +9,12 @@
     <string name="menu_simulator">Simulator</string>
     <string name="menu_teams">Teams</string>
     <string name="menu_results">Results</string>
+    <string name="teams_title">Teams</string>
+    <string name="content_description_team_image">Team Image</string>
+    <string name="teams_add_team">+ Add Team!</string>
+    <string name="teams_action_add_team">Add Team</string>
+    <string name="teams_hint_team_name">Team name</string>
+    <string name="content_description_team_image_next">Next team logo</string>
+    <string name="content_description_team_image_previous">Previous team logo</string>
+    <string name="teams_add_players">Add Players</string>
 </resources>
