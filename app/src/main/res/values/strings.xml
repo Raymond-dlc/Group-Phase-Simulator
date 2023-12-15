@@ -17,4 +17,6 @@
     <string name="content_description_team_image_next">Next team logo</string>
     <string name="content_description_team_image_previous">Previous team logo</string>
     <string name="teams_add_players">Add Players</string>
+    <string name="menu_team_details">Team details</string>
+    <string name="content_description_re_roll">Re-Roll</string>
 </resources>

@@ -54,9 +54,10 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
                 mTeamDetailsViewModel.uiState.collect { uiState ->
                     binding.ivTeamImage.setImageResource(uiState.logoResourceId)
                     binding.etvTeamName.setText(uiState.teamName)
-
+                    binding.btnReRoll.visibility = if (uiState.players.isEmpty()) View.GONE else View.VISIBLE
+                    binding.btnAddPlayers.visibility = if (uiState.players.isEmpty()) View.VISIBLE else View.GONE
                     if (!uiState.isComplete) {
-
+                        // set canSave?
                     }
                 }
             }
@@ -77,8 +78,10 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
         binding.btnAddPlayers.setOnClickListener {
             mTeamDetailsViewModel.randomizePlayers()
         }
+        binding.btnReRoll.setOnClickListener {
+            mTeamDetailsViewModel.randomizePlayers()
+        }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -89,7 +92,7 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
         menu.add(0, ACTION_BAR_SAVE, 0, getString(R.string.teams_action_add_team)).apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             iconTintList = ColorStateList.valueOf(Color.WHITE)
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_menu_gallery)
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_add)
         }
     }
 

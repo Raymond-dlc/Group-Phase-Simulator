@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import com.oceanscurse.groupstagesimulator.R
 import com.oceanscurse.groupstagesimulator.data.PlayersRepository
 import com.oceanscurse.groupstagesimulator.data.TeamsRepository
+import com.oceanscurse.groupstagesimulator.model.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlin.random.Random
 
+// TODO: Add team id.
 class TeamDetailsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(
         TeamDetailsUiState(
@@ -76,8 +79,18 @@ class TeamDetailsViewModel : ViewModel() {
      * Adds a set of 11 random players to the team.
      */
     fun randomizePlayers() {
+        val newPlayers = mutableListOf<Player>()
+        for (i in 0..11) {
+            val strength = Random.nextInt(1,  20)
+            val speed = Random.nextInt(1,  20)
+            val defence = Random.nextInt(1,  20)
+            val player = Player(0, "New Player", strength, speed, defence, 0)
+            newPlayers.add(player)
+        }
+        PlayersRepository.addPlayers(newPlayers)
 
+        _uiState.update {
+            it.copy(players = PlayersRepository.getPlayersForTeam(0))
+        }
     }
-
-
 }

@@ -30,6 +30,6 @@
     <fragment
         android:id="@+id/nav_team_details"
         android:name="com.oceanscurse.groupstagesimulator.ui.teams.TeamDetailsFragment"
-        android:label="fragment_team_details"
+        android:label="@string/menu_team_details"
         tools:layout="@layout/fragment_team_details" />
 </navigation>

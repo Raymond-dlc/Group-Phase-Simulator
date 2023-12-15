@@ -8,5 +8,6 @@ data class Player(
     val name: String,
     val strength: Int,
     val speed: Int,
+    val defence: Int,
     val teamId: Int
 )
