@@ -45,9 +45,16 @@ class PlayersAdapter(
             tvPlayerStrength = view.findViewById(R.id.tv_player_strength)
             tvPlayerSpeed = view.findViewById(R.id.tv_player_speed)
             tvPlayerDefence = view.findViewById(R.id.tv_player_defence)
+            tvPlayerName.visibility = View.GONE
+            tvPlayerStrength.visibility = View.GONE
+            tvPlayerSpeed.visibility = View.GONE
+            tvPlayerDefence.visibility = View.GONE
 
-            (view as ViewGroup).children.forEachIndexed { index, valueView ->
-                valueView.x = xPositions[index]
+            view.post {
+                (view as ViewGroup).children.forEachIndexed { index, valueView ->
+                    valueView.x = xPositions[index]
+                    valueView.visibility = View.VISIBLE
+                }
             }
         }
 

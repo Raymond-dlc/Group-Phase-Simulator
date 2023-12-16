@@ -34,4 +34,13 @@ class TeamsViewModel : ViewModel() {
             )
         }
     }
+
+    // Will create 4 team instantly, to more quickly get started with the simulation.
+    fun createTeams() {
+        TeamsRepository.createFullTeam(0)
+        TeamsRepository.createFullTeam(1)
+        TeamsRepository.createFullTeam(2)
+        TeamsRepository.createFullTeam(3)
+        refreshTeams()
+    }
 }

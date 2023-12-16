@@ -1,5 +1,7 @@
 package com.oceanscurse.groupstagesimulator.data
 
+import com.oceanscurse.groupstagesimulator.Constants
+import com.oceanscurse.groupstagesimulator.model.Player
 import com.oceanscurse.groupstagesimulator.model.Team
 
 /**
@@ -24,6 +26,17 @@ class TeamsRepository {
 
         fun addTeam(team: Team) {
             mTeams.add(team)
+        }
+
+        fun createFullTeam(teamId: Int) {
+            PlayersRepository.addRandomPlayersForTeam(teamId)
+            val team = Team(
+                teamId,
+                "Team ${teamId + 1}",
+                Constants.logosResourceIds.random(),
+                PlayersRepository.getPlayersForTeam(teamId)
+            )
+            updateTeam(team)
         }
     }
 }

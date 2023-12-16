@@ -73,8 +73,6 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 mTeamDetailsViewModel.uiState.collect { uiState ->
-                    println("colelcting?")
-                    println(uiState.players)
                     binding.ivTeamImage.setImageResource(uiState.logoResourceId)
 
                     if (!binding.etvTeamName.hasFocus()) {
@@ -87,6 +85,9 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
                     mRecyclerViewData.clear()
                     mRecyclerViewData.add(null) // Header
                     mRecyclerViewData.addAll(uiState.players)
+
+                    println("uiState.players: ${uiState.players}")
+
                     binding.rvPlayers.adapter?.notifyDataSetChanged()
 
                     uiState.saveException?.let { handleException(it) }
@@ -149,7 +150,7 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
         menu.add(0, ACTION_BAR_SAVE, 0, getString(R.string.teams_action_add_team)).apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             iconTintList = ColorStateList.valueOf(Color.WHITE)
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_add)
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_save)
         }
     }
 

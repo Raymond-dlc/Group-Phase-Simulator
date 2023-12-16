@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.random.Random
 
-// TODO: Add team id.
 class TeamDetailsViewModel : ViewModel() {
 
     private var mCurrentLogoIndex = 0
@@ -28,16 +27,16 @@ class TeamDetailsViewModel : ViewModel() {
     // Sets the team id for the viewModel and gets the correct team data from the
     // repository
     fun setTeamId(editingTeamId: Int) {
-        println("we would like to see team : $editingTeamId")
         val team = TeamsRepository.getTeamById(editingTeamId)
-        println(team)
         mCurrentLogoIndex = Constants.logosResourceIds.indexOf(team?.logoResourceId).takeIf { it >= 0 } ?: 0
         mNewPlayers = team?.players?.toMutableList() ?: mutableListOf()
         mNewTeamName = team?.name ?: ""
         mTeamId = editingTeamId
 
-        println("new players $mNewPlayers")
-
+        println("mCurrentLogoIndex: $mCurrentLogoIndex")
+        println("mNewPlayers: $mNewPlayers")
+        println("mNewTeamName: $mNewTeamName")
+        println("mTeamId: $mTeamId")
         _uiState.update {
             it.copy(
                 players = mNewPlayers,
@@ -95,7 +94,6 @@ class TeamDetailsViewModel : ViewModel() {
             return
         }
 
-        println("size: ${team.players.size}")
         if (team.players.size != 11) {
             _uiState.update {
                 it.copy(saveException = TeamEmptyException())
@@ -111,24 +109,15 @@ class TeamDetailsViewModel : ViewModel() {
      * Adds a set of 11 random players to the team.
      */
     fun randomizePlayers() {
-        mNewPlayers = mutableListOf<Player>()
-        val names = Constants.playerNames.shuffled()
-
-        for (i in 0 until 11) {
-            val strength = Random.nextInt(12, 20)
-            val speed = Random.nextInt(12, 20)
-            val defence = Random.nextInt(12, 20)
-            val player = Player(names[i], strength, speed, defence, mTeamId)
-            mNewPlayers.add(player)
-        }
-        PlayersRepository.clearPlayerForTeam(mTeamId)
-        PlayersRepository.addPlayers(mNewPlayers)
-
+        PlayersRepository.addRandomPlayersForTeam(mTeamId)
         _uiState.update {
             it.copy(players = PlayersRepository.getPlayersForTeam(mTeamId))
         }
     }
 
+    /**
+     * Will clear the exception, as the UI indicates it's handled.
+     */
     fun notifyExceptionHandled() {
         _uiState.update {
             it.copy(saveException = null)

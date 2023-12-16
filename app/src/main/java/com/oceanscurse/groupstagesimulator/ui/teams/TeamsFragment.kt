@@ -76,7 +76,6 @@ class TeamsFragment : Fragment(), MenuProvider {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 mTeamsViewModel.refreshTeams()
-                println("refresh them?")
             }
         }
     }
@@ -99,11 +98,12 @@ class TeamsFragment : Fragment(), MenuProvider {
         menu.add("Test").apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             iconTintList = ColorStateList.valueOf(Color.WHITE)
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_add)
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_refresh)
         }
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        mTeamsViewModel.createTeams()
         return false
     }
 
