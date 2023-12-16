@@ -13,12 +13,16 @@ class PlayersRepository {
 
         fun getPlayersForTeam(teamId: Int): MutableList<Player> {
             return mPlayers
-                .filter { it.id == teamId }
+                .filter { it.teamId == teamId }
                 .map { it }.toMutableList()
         }
 
         fun addPlayers(players: List<Player>) {
             mPlayers.addAll(players)
+        }
+
+        fun clearPlayerForTeam(teamId: Int) {
+            mPlayers.removeIf { it.teamId == teamId }
         }
     }
 }

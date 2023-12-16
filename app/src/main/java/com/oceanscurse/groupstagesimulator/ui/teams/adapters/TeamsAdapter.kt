@@ -21,13 +21,14 @@ class TeamsAdapter(
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
     class ViewHolder(view: View, onItemClicked: (Team) -> Unit) : RecyclerView.ViewHolder(view) {
-        private val textView: TextView
-        private val imageView: ImageView
+        private val tvTeamName: TextView
+        private val ivTeamImage: ImageView
+
         private var currentTeam: Team? = null
 
         init {
-            textView = view.findViewById(R.id.tv_team_name)
-            imageView = view.findViewById(R.id.iv_team_image)
+            tvTeamName = view.findViewById(R.id.tv_team_name)
+            ivTeamImage = view.findViewById(R.id.iv_team_image)
             view.setOnClickListener {
                 currentTeam?.let {
                     onItemClicked(it)
@@ -37,9 +38,9 @@ class TeamsAdapter(
 
         fun bind(team: Team) {
             currentTeam = team
-            textView.text = if (!team.isComplete()) textView.context.getString(R.string.teams_add_team) else team.name
-            imageView.setImageResource(R.drawable.logo_1)
-            imageView.alpha = if (!team.isComplete()) 0.2f else 1.0f
+            tvTeamName.text = if (!team.isComplete()) tvTeamName.context.getString(R.string.teams_add_team) else team.name
+            ivTeamImage.setImageResource(team.logoResourceId)
+            ivTeamImage.alpha = if (!team.isComplete()) 0.2f else 1.0f
         }
     }
 

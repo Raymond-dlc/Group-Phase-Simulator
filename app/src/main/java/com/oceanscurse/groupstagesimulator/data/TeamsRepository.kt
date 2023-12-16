@@ -13,6 +13,15 @@ class TeamsRepository {
             return mTeams.map { it }.toMutableList()
         }
 
+        fun getTeamById(teamId: Int): Team? {
+            return mTeams.find { it.id == teamId }
+        }
+
+        fun updateTeam(team: Team) {
+            mTeams.removeIf { it.id == team.id }
+            mTeams.add(team)
+        }
+
         fun addTeam(team: Team) {
             mTeams.add(team)
         }

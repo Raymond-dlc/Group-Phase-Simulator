@@ -86,6 +86,7 @@
         android:id="@+id/rv_players"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,11 +98,11 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="16dp"
+        android:contentDescription="@string/content_description_re_roll"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_refresh"
-        android:contentDescription="@string/content_description_re_roll" />
+        app:srcCompat="@drawable/ic_refresh" />
 
     <Button
         android:id="@+id/btn_add_players"

@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.update
 class TeamsViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        TeamsUiState(
-            teams = TeamsRepository.getTeams(),
-            isComplete = TeamsRepository.getTeams().size > 3
-        )
+        TeamsUiState()
     )
     val uiState: StateFlow<TeamsUiState> = _uiState.asStateFlow()
 
@@ -24,6 +21,16 @@ class TeamsViewModel : ViewModel() {
         _uiState.update {
             it.copy(
                 teams = TeamsRepository.getTeams()
+            )
+        }
+    }
+
+    fun refreshTeams() {
+        val teams = TeamsRepository.getTeams()
+        _uiState.update {
+            it.copy(
+                teams = teams,
+                isComplete = teams.size > 3
             )
         }
     }

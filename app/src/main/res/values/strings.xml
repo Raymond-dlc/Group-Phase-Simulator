@@ -19,4 +19,13 @@
     <string name="teams_add_players">Add Players</string>
     <string name="menu_team_details">Team details</string>
     <string name="content_description_re_roll">Re-Roll</string>
+    <string name="placeholder_name">Name</string>
+    <string name="placeholder_two_digit_int">24</string>
+    <string name="players_header_name">Name</string>
+    <string name="players_header_strength">Strength</string>
+    <string name="players_header_speed">Speed</string>
+    <string name="players_header_defence">Defence</string>
+    <string name="error_please_enter_team_name">Please enter a team name.</string>
+    <string name="error_please_setup_team_player">Please add players to the team.</string>
+    <string name="error_unknown_error">Something went wrong, please try again.</string>
 </resources>
