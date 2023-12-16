@@ -30,12 +30,15 @@ import kotlinx.coroutines.launch
 
 class TeamsFragment : Fragment(), MenuProvider {
 
+    companion object {
+        const val ACTION_CREATE_TEAMS = 72638476
+    }
+
     private var _binding: FragmentTeamsBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var mTeamsViewModel: TeamsViewModel
     private var mRecyclerViewData = mutableListOf<Team>()
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTeamsBinding.inflate(inflater, container, false)
@@ -81,8 +84,8 @@ class TeamsFragment : Fragment(), MenuProvider {
     }
 
     private fun setupListeners() {
-        val customAdapter = TeamsAdapter(mRecyclerViewData) {team ->
-            val mainViewModel : MainViewModel by activityViewModels()
+        val customAdapter = TeamsAdapter(mRecyclerViewData) { team ->
+            val mainViewModel: MainViewModel by activityViewModels()
             mainViewModel.editingTeamId = team.id
             Navigation.findNavController(binding.root).navigate(R.id.nav_team_details)
         }
@@ -94,8 +97,7 @@ class TeamsFragment : Fragment(), MenuProvider {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        //TODO: Add string resource
-        menu.add("Test").apply {
+        menu.add(0, ACTION_CREATE_TEAMS, 0, getString(R.string.teams_add_team)).apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             iconTintList = ColorStateList.valueOf(Color.WHITE)
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_refresh)
@@ -103,7 +105,8 @@ class TeamsFragment : Fragment(), MenuProvider {
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        mTeamsViewModel.createTeams()
+        if (menuItem.itemId == ACTION_CREATE_TEAMS)
+            mTeamsViewModel.createTeams()
         return false
     }
 

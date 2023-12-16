@@ -5,11 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
+import com.oceanscurse.groupstagesimulator.MainActivity
 import com.oceanscurse.groupstagesimulator.R
 import com.oceanscurse.groupstagesimulator.databinding.FragmentSimulatorBinding
+import kotlinx.coroutines.launch
 
 class SimulatorFragment : Fragment() {
 
@@ -17,24 +26,34 @@ class SimulatorFragment : Fragment() {
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+    private val mSimulatorViewModel: SimulatorViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val simulatorViewModel = ViewModelProvider(this)[SimulatorViewModel::class.java]
-
         _binding = FragmentSimulatorBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        simulatorViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-
-        //TODO: REMOVE
-        root.post {
-            Navigation.findNavController(root).navigate(R.id.nav_teams)
-        }
+        setupViewModel()
+        initEmptyState()
 
         return root
+    }
+
+    private fun initEmptyState() {
+        binding.btnGoToTeams.setOnClickListener {
+            if (activity is MainActivity) {
+                (activity as MainActivity).openDrawer()
+            }
+        }
+    }
+
+    private fun setupViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                mSimulatorViewModel.uiState.collect { uiState ->
+                    binding.llEmptyState.visibility = if (uiState.meetsRequirements) View.GONE else View.VISIBLE
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

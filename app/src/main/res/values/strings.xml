@@ -28,4 +28,7 @@
     <string name="error_please_enter_team_name">Please enter a team name.</string>
     <string name="error_please_setup_team_player">Please add players to the team.</string>
     <string name="error_unknown_error">Something went wrong, please try again.</string>
+    <string name="simulator_empty_state_title">Before we can run the simulation, we need to set up some teams!</string>
+    <string name="simulator_to_teams">To Teams!</string>
+    <string name="teams_instructions">Set up the teams, or tap the refresh icon to auto generate 4 teams.</string>
 </resources>

@@ -33,10 +33,6 @@ class TeamDetailsViewModel : ViewModel() {
         mNewTeamName = team?.name ?: ""
         mTeamId = editingTeamId
 
-        println("mCurrentLogoIndex: $mCurrentLogoIndex")
-        println("mNewPlayers: $mNewPlayers")
-        println("mNewTeamName: $mNewTeamName")
-        println("mTeamId: $mTeamId")
         _uiState.update {
             it.copy(
                 players = mNewPlayers,
@@ -110,8 +106,9 @@ class TeamDetailsViewModel : ViewModel() {
      */
     fun randomizePlayers() {
         PlayersRepository.addRandomPlayersForTeam(mTeamId)
+        mNewPlayers = PlayersRepository.getPlayersForTeam(mTeamId)
         _uiState.update {
-            it.copy(players = PlayersRepository.getPlayersForTeam(mTeamId))
+            it.copy(players = mNewPlayers)
         }
     }
 

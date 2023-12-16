@@ -86,8 +86,6 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
                     mRecyclerViewData.add(null) // Header
                     mRecyclerViewData.addAll(uiState.players)
 
-                    println("uiState.players: ${uiState.players}")
-
                     binding.rvPlayers.adapter?.notifyDataSetChanged()
 
                     uiState.saveException?.let { handleException(it) }
