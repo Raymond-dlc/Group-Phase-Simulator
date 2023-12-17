@@ -39,4 +39,5 @@
     <string name="simulator_round_plus_number">Round %1$d</string>
     <string name="placeholder_team">Team X</string>
     <string name="placeholder_score">X - X</string>
+    <string name="simulator_play">Play!</string>
 </resources>

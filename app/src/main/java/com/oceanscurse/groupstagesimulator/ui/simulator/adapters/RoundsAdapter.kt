@@ -1,18 +1,19 @@
 package com.oceanscurse.groupstagesimulator.ui.simulator.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.oceanscurse.groupstagesimulator.Constants
 import com.oceanscurse.groupstagesimulator.R
 import com.oceanscurse.groupstagesimulator.model.Round
-import com.oceanscurse.groupstagesimulator.utilities.toDp
 import com.oceanscurse.groupstagesimulator.utilities.toPixels
 
 /**
@@ -26,14 +27,38 @@ class RoundsAdapter(
     class ViewHolder(view: View, onItemClicked: (Int) -> Unit) : RecyclerView.ViewHolder(view) {
         private val rvRoundTitle: TextView
         private val llRoundLines: LinearLayout
+        private val btnPlay: Button
         private var currentRound: Round? = null
 
         init {
             rvRoundTitle = view.findViewById(R.id.tv_round_title)
             llRoundLines = view.findViewById(R.id.ll_round_lines)
+            btnPlay = view.findViewById(R.id.btn_play)
             for (i in 0 until Constants.NUM_MATCHES_PER_ROUND) {
                 llRoundLines.addView(createMatchLine(llRoundLines.context))
             }
+
+            btnPlay.setOnClickListener {
+                onItemClicked(currentRound?.id ?: -1)
+            }
+        }
+
+        @SuppressLint("SetTextI18n")
+        fun bind(round: Round) {
+            currentRound = round
+            rvRoundTitle.text = rvRoundTitle.context.getString(R.string.simulator_round_plus_number, round.id + 1)
+            round.matches.forEachIndexed { index, match ->
+                // index is offset by 2 due to the round title and the header.
+                ((llRoundLines[index + 2] as ConstraintLayout)[0] as TextView).text = match.homeTeam?.name
+                ((llRoundLines[index + 2] as ConstraintLayout)[1] as TextView).text = if (round.isPlayed) {
+                    "${match.homeTeamScore} - ${match.awayTeamScore}"
+                } else {
+                    "X - X"
+                }
+                ((llRoundLines[index + 2] as ConstraintLayout)[2] as TextView).text = match.awayTeam?.name
+            }
+
+            btnPlay.visibility = if (round.isPlayed) View.GONE else View.VISIBLE
         }
 
         /**
@@ -58,11 +83,9 @@ class RoundsAdapter(
                     ConstraintLayout.LayoutParams.WRAP_CONTENT,
                     ConstraintLayout.LayoutParams.WRAP_CONTENT
                 ).also { lp ->
-                    lp.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
                     lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
                     lp.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-                    lp.endToStart = tvScore.id
-                    lp.horizontalChainStyle = ConstraintLayout.LayoutParams.CHAIN_SPREAD_INSIDE
+                    lp.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
                 }
 
                 text = context.getString(R.string.placeholder_team)
@@ -74,11 +97,8 @@ class RoundsAdapter(
                 ).also { lp ->
                     lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
                     lp.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-                    lp.startToEnd = tvHomeTeam.id
-                    lp.endToStart = tvAwayTeam.id
-                    lp.marginStart = 16.toPixels(resources)
-                    lp.marginEnd = 16.toPixels(resources)
-                    lp.horizontalChainStyle = ConstraintLayout.LayoutParams.CHAIN_SPREAD_INSIDE
+                    lp.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+                    lp.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
                 }
 
                 text = context.getString(R.string.placeholder_score)
@@ -88,11 +108,9 @@ class RoundsAdapter(
                     ConstraintLayout.LayoutParams.WRAP_CONTENT,
                     ConstraintLayout.LayoutParams.WRAP_CONTENT
                 ).also { lp ->
-                    lp.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
                     lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
                     lp.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-                    lp.startToEnd = tvScore.id
-                    lp.horizontalChainStyle = ConstraintLayout.LayoutParams.CHAIN_SPREAD_INSIDE
+                    lp.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
                 }
 
                 text = context.getString(R.string.placeholder_team)
@@ -100,7 +118,7 @@ class RoundsAdapter(
 
             return ConstraintLayout(context).apply {
                 layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 setPadding(0, 8.toPixels(resources), 0, 0)
@@ -108,11 +126,6 @@ class RoundsAdapter(
                 addView(tvScore)
                 addView(tvAwayTeam)
             }
-        }
-
-        fun bind(round: Round) {
-            currentRound = round
-            rvRoundTitle.text = rvRoundTitle.context.getString(R.string.simulator_round_plus_number, round.id + 1)
         }
     }
 

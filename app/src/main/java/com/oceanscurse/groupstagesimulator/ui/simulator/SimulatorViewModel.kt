@@ -25,6 +25,7 @@ class SimulatorViewModel : ViewModel() {
         if (meetsRequirements) {
             if (mGroupStage.rounds.isEmpty()) {
                 generateRounds()
+                assignTeams()
             }
         }
 
@@ -36,20 +37,37 @@ class SimulatorViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Generates rounds for the current groupStage. It will create as many rounds as defined
+     * in Constants.NUM_ROUNDS and as many matches as defined in Constants.NUM_MATCHES_PER_ROUND.
+     * The rounds will start off empty, with no teams assigned to the matches.
+     */
     private fun generateRounds() {
+        val rounds = mutableListOf<Round>()
+        for (i in 0 until Constants.NUM_ROUNDS) {
+            val matches = mutableListOf<Match>()
+            for (j in 0 until Constants.NUM_MATCHES_PER_ROUND) {
+                matches.add(Match())
+            }
+            rounds.add(Round(i, matches))
+        }
+        mGroupStage.rounds = rounds
+    }
+
+    /**
+     * Assigns the teams to the rounds, preparing them for the play-offs.
+     * Does so by shuffling the teams, and assigning them
+     */
+    fun assignTeams() {
         val teams = TeamsRepository.getTeams()
 
-        val newRounds = mutableListOf<Round>()
-        for (i in 0 until Constants.NUM_ROUNDS) {
-            newRounds.add(
-                Round(
-                    i, listOf(
-                        Match(0, teams[0], teams[1], 0, 0),
-                        Match(0, teams[0], teams[1], 0, 0)
-                    )
-                )
-            )
+        mGroupStage.rounds.forEach { round ->
+            teams.shuffle()
+            round.matches.forEachIndexed { index, match ->
+                match.homeTeam = teams[(index * 2) % Constants.NUM_COMPETING_TEAMS]
+                match.awayTeam = teams[((index * 2) + 1) % Constants.NUM_COMPETING_TEAMS]
+            }
         }
-        mGroupStage.rounds = newRounds
     }
+
 }

@@ -58,7 +58,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         app:counterEnabled="true"
-        app:counterMaxLength="20"
+        app:counterMaxLength="12"
         app:layout_constraintEnd_toEndOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_team_image">
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
             android:hint="@string/teams_hint_team_name"
-            android:maxLength="20" />
+            android:maxLength="12" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
