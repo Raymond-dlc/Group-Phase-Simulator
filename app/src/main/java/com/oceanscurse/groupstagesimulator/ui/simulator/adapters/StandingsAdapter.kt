@@ -30,7 +30,7 @@ class StandingsAdapter(
     // This header does not hold any dynamic values, the texts are set in R.layout.vh_player_header.
     class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {}
 
-    class PlayerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ResultViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvPosition: TextView
         private val tvTeamName: TextView
         private val tvPlayed: TextView
@@ -57,6 +57,7 @@ class StandingsAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(result: Result) {
+            println("bind for team: ${result.team.name}")
             tvPosition.text = "${result.position}."
             tvTeamName.text = "${result.team.name} (${result.team.totalTeamPoints()})"
             tvPlayed.text = result.timesPlayed.toString()
@@ -81,16 +82,16 @@ class StandingsAdapter(
 
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_result_header, viewGroup, false))
-            VIEW_TYPE_RESULT -> PlayerViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_result, viewGroup, false))
+            VIEW_TYPE_RESULT -> ResultViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_result, viewGroup, false))
             else -> {
-                PlayerViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_result, viewGroup, false))
+                ResultViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_result, viewGroup, false))
             }
         }
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        if (viewHolder is PlayerViewHolder) {
+        if (viewHolder is ResultViewHolder) {
             dataSet[position]?.let {
                 viewHolder.bind(it)
             }

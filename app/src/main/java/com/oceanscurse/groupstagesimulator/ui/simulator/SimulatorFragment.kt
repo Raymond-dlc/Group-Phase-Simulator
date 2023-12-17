@@ -73,6 +73,7 @@ class SimulatorFragment : Fragment() {
                         mRecyclerViewResults.clear()
                         mRecyclerViewResults.add(null) // header
                         mRecyclerViewResults.addAll(uiState.groupStage.results)
+
                         binding.rvStandings.adapter?.notifyDataSetChanged()
                     }
                 }
