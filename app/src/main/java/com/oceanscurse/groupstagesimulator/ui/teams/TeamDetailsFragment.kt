@@ -132,9 +132,9 @@ class TeamDetailsFragment : Fragment(), MenuProvider {
             mTeamDetailsViewModel.randomizePlayers()
         }
 
-        val customAdapter = PlayersAdapter(mRecyclerViewData)
+        val playersAdapter = PlayersAdapter(mRecyclerViewData)
         binding.rvPlayers.apply {
-            adapter = customAdapter
+            adapter = playersAdapter
             layoutManager = LinearLayoutManager(context)
         }
     }

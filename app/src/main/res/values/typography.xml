@@ -6,6 +6,11 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="subtitle">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="caption">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>

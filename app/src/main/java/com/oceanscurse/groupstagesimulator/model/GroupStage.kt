@@ -5,6 +5,6 @@ package com.oceanscurse.groupstagesimulator.model
  */
 data class GroupStage(
     val id: Int,
-    val rounds: List<Round>,
-    val results: List<Result>
+    var rounds: List<Round>,
+    var results: List<Result>
 )
