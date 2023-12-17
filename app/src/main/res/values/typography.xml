@@ -23,4 +23,9 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="table_data">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/body_text</item>
+    </style>
+
 </resources>

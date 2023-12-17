@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="divider">#FFDFDFDF</color>
     <color name="icon_grey">#606060</color>
+    <color name="body_text">#282828</color>
 </resources>

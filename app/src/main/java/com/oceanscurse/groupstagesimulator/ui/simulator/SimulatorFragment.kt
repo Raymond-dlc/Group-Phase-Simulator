@@ -20,6 +20,7 @@ import com.oceanscurse.groupstagesimulator.databinding.FragmentSimulatorBinding
 import com.oceanscurse.groupstagesimulator.model.Result
 import com.oceanscurse.groupstagesimulator.model.Round
 import com.oceanscurse.groupstagesimulator.ui.simulator.adapters.RoundsAdapter
+import com.oceanscurse.groupstagesimulator.ui.simulator.adapters.StandingsAdapter
 import com.oceanscurse.groupstagesimulator.ui.teams.TeamsViewModel
 import com.oceanscurse.groupstagesimulator.ui.teams.adapters.PlayersAdapter
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class SimulatorFragment : Fragment() {
     private val binding get() = _binding!!
     private val mSimulatorViewModel: SimulatorViewModel by viewModels()
     private val mRecyclerViewRounds = mutableListOf<Round>()
-    private val mRecyclerViewResults = mutableListOf<Result>()
+    private val mRecyclerViewResults = mutableListOf<Result?>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSimulatorBinding.inflate(inflater, container, false)
@@ -39,6 +40,7 @@ class SimulatorFragment : Fragment() {
         setupViewModel()
         initEmptyState()
         setupRounds()
+        setupStandings()
 
         return root
     }
@@ -67,6 +69,11 @@ class SimulatorFragment : Fragment() {
                         mRecyclerViewRounds.clear()
                         mRecyclerViewRounds.addAll(uiState.groupStage.rounds)
                         binding.rvRounds.adapter?.notifyDataSetChanged()
+
+                        mRecyclerViewResults.clear()
+                        mRecyclerViewResults.add(null) // header
+                        mRecyclerViewResults.addAll(uiState.groupStage.results)
+                        binding.rvStandings.adapter?.notifyDataSetChanged()
                     }
                 }
             }
@@ -93,6 +100,14 @@ class SimulatorFragment : Fragment() {
                 } else {
                     LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 }
+        }
+    }
+
+    private fun setupStandings() {
+        val standingsAdapter = StandingsAdapter(mRecyclerViewResults)
+        binding.rvStandings.apply {
+            adapter = standingsAdapter
+            layoutManager = LinearLayoutManager(context)
         }
     }
 

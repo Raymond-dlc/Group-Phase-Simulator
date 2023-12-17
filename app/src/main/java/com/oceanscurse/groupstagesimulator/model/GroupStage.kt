@@ -6,7 +6,7 @@ package com.oceanscurse.groupstagesimulator.model
 class GroupStage(
     val id: Int,
     var rounds: MutableList<Round>,
-    var results: List<Result>
+    var results: MutableList<Result>
 ) {
     fun copy(): GroupStage {
         return GroupStage(

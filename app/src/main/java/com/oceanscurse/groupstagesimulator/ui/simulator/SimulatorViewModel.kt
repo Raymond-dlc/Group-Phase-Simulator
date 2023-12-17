@@ -5,6 +5,7 @@ import com.oceanscurse.groupstagesimulator.Constants
 import com.oceanscurse.groupstagesimulator.data.TeamsRepository
 import com.oceanscurse.groupstagesimulator.model.GroupStage
 import com.oceanscurse.groupstagesimulator.model.Match
+import com.oceanscurse.groupstagesimulator.model.Result
 import com.oceanscurse.groupstagesimulator.model.Round
 import com.oceanscurse.groupstagesimulator.model.Team
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 
 class SimulatorViewModel : ViewModel() {
-    private var mGroupStage: GroupStage = GroupStage(0, mutableListOf(), listOf())
+    private var mGroupStage: GroupStage = GroupStage(0, mutableListOf(), mutableListOf())
 
     private val _uiState = MutableStateFlow(SimulatorUiState())
     val uiState: StateFlow<SimulatorUiState> = _uiState.asStateFlow()
@@ -38,32 +39,11 @@ class SimulatorViewModel : ViewModel() {
     }
 
     /**
-     * Generates rounds for the current groupStage. It will create as many rounds as defined
-     * in Constants.NUM_ROUNDS and as many matches as defined in Constants.NUM_MATCHES_PER_ROUND.
-     * The rounds will start off empty, with no teams assigned to the matches.
-     */
-    private fun generateRounds() {
-        val rounds = mutableListOf<Round>()
-        for (i in 0 until Constants.NUM_ROUNDS) {
-            val matches = mutableListOf<Match>()
-            for (j in 0 until Constants.NUM_MATCHES_PER_ROUND) {
-                matches.add(Match())
-            }
-            rounds.add(Round(i, matches))
-        }
-        mGroupStage.rounds = rounds
-    }
-
-    /**
      * Assigns the teams to the rounds, preparing them for the play-offs.
      * Does so by shuffling the teams, and assigning them
      */
     fun assignTeams() {
         val teams = TeamsRepository.getTeams()
-
-        teams.forEach {
-            println("${it.name} ${it.totalTeamPoints()}")
-        }
 
         mGroupStage.rounds.forEach { round ->
             teams.shuffle()
@@ -71,6 +51,10 @@ class SimulatorViewModel : ViewModel() {
                 match.homeTeam = teams[(index * 2) % Constants.NUM_COMPETING_TEAMS]
                 match.awayTeam = teams[((index * 2) + 1) % Constants.NUM_COMPETING_TEAMS]
             }
+        }
+
+        teams.forEachIndexed { index, team ->
+            mGroupStage.results.add(Result(index + 1, team))
         }
     }
 
@@ -86,17 +70,22 @@ class SimulatorViewModel : ViewModel() {
         if (round.matches.any { it.homeTeam == null || it.awayTeam == null }) return
 
         round.let {
-            it.matches.forEach { match ->
-                val score = calculateScore(match.homeTeam!!, match.awayTeam!!)
-                match.homeTeamScore = score.first
-                match.awayTeamScore = score.second
-            }
+            it.matches.forEach { match -> playMatch(match) }
             round.isPlayed = true
         }
+
+        updateStandings(round)
+        sortStandings()
 
         _uiState.update {
             it.copy(groupStage = mGroupStage.copy())
         }
+    }
+
+    fun playMatch(match: Match) {
+        val score = calculateScore(match.homeTeam!!, match.awayTeam!!)
+        match.homeTeamScore = score.first
+        match.awayTeamScore = score.second
     }
 
     /**
@@ -106,7 +95,11 @@ class SimulatorViewModel : ViewModel() {
      * Score is calculate by the chances the team get to shoot at the goal, and the chance it has to
      * actually make a goal.
      *
-     * The number of chances are decided by
+     * The number of chances are decided by comparing the total strengths and the difference. The bigger
+     * difference in score, the more chances the stronger team will have.
+     *
+     * For each shot on the goal, there is a chance for it to actually score. This depends on the difference
+     * in score and the total score.
      */
     fun calculateScore(homeTeam: Team, awayTeam: Team): Pair<Int, Int> {
         val homeTotalPoints = homeTeam.totalTeamPoints() + Constants.HOME_TEAM_ADVANTAGE_POINTS
@@ -119,14 +112,6 @@ class SimulatorViewModel : ViewModel() {
 
         var homeTeamScore = 0;
         var awayTeamScore = 0;
-
-        println("homeTeamTotalPoints $homeTotalPoints")
-        println("awayTeamTotalPoints $awayTotalPoints")
-        println("teamPointsDifference $teamPointsDifference")
-        println("homeShotsOnGoal $homeShotsOnGoal")
-        println("awayShotsOnGoal $awayShotsOnGoal")
-        println("homeScoreChance $homeScoreChance")
-        println("awayScoreChance $awayScoreChance")
 
         for (i in 0 until homeShotsOnGoal) {
             // Shot
@@ -145,6 +130,97 @@ class SimulatorViewModel : ViewModel() {
         }
 
         return Pair(homeTeamScore, awayTeamScore)
+    }
+
+    private fun updateStandings(playedRound: Round) {
+        playedRound.matches.forEach { match ->
+            val homeTeamResults = mGroupStage.results.find { it.team.id == match.homeTeam?.id }
+            val awayTeamResults = mGroupStage.results.find { it.team.id == match.awayTeam?.id }
+
+            homeTeamResults?.apply {
+                timesPlayed++
+                if (match.homeTeamScore > match.awayTeamScore) {
+                    wins++
+                    points += 2
+                } else if (match.homeTeamScore == match.awayTeamScore) {
+                    draws++
+                    points += 1
+                } else {
+                    losses++
+                }
+                goals += match.homeTeamScore
+                goalsAgainst += match.awayTeamScore
+                netScore = goals - goalsAgainst
+            }
+
+            awayTeamResults?.apply {
+                timesPlayed++
+                if (match.awayTeamScore > match.homeTeamScore) {
+                    wins++
+                    points += 2
+                } else if (match.awayTeamScore == match.homeTeamScore) {
+                    draws++
+                    points += 1
+                } else {
+                    losses++
+                }
+                goals += match.awayTeamScore
+                goalsAgainst += match.homeTeamScore
+                netScore = goals - goalsAgainst
+            }
+        }
+    }
+
+    /**
+     * Will sort the standings based on the following priority:
+     * 1. Points
+     * 2. Goal difference
+     * 3. Goals for
+     * 4. Goals against
+     * 5. Head 2 head result
+     */
+    private fun sortStandings() {
+        mGroupStage.results.sortWith(Comparator<Result> { resultA, resultB ->
+            // points
+            if (resultA.points > resultB.points) return@Comparator -1
+            if (resultB.points > resultA.points) return@Comparator 1
+
+            // Goal difference
+            if (resultA.netScore > resultB.netScore) return@Comparator -1
+            if (resultB.netScore > resultA.netScore) return@Comparator 1
+
+            // Goals for
+            if (resultA.goals > resultB.goals) return@Comparator -1
+            if (resultB.goals > resultA.goals) return@Comparator 1
+
+            // Goals against
+            if (resultA.goalsAgainst < resultB.goalsAgainst) return@Comparator -1
+            if (resultB.goalsAgainst < resultA.goalsAgainst) return@Comparator 1
+
+            // Head 2 head
+            return@Comparator 0
+        })
+
+        mGroupStage.results.forEachIndexed { index, result ->
+            result.position = index + 1;
+        }
+    }
+
+    /**
+     * Generates rounds for the current groupStage. It will create as many rounds as defined
+     * in Constants.NUM_ROUNDS and as many matches as defined in Constants.NUM_MATCHES_PER_ROUND.
+     * The rounds will start off empty, with no teams assigned to the matches.
+     */
+    private fun generateRounds() {
+        val rounds = mutableListOf<Round>()
+        for (i in 0 until Constants.NUM_ROUNDS) {
+            val matches = mutableListOf<Match>()
+            for (j in 0 until Constants.NUM_MATCHES_PER_ROUND) {
+                matches.add(Match())
+            }
+            rounds.add(Round(i, matches))
+        }
+        mGroupStage.rounds = rounds
     }
 
 }

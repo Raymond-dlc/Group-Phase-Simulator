@@ -40,4 +40,15 @@
     <string name="placeholder_team">Team X</string>
     <string name="placeholder_score">X - X</string>
     <string name="simulator_play">Play!</string>
+    <string name="results_header_position">Position</string>
+    <string name="results_header_team">Team</string>
+    <string name="results_header_played">Played</string>
+    <string name="results_header_win">Win</string>
+    <string name="results_header_draw">Draw</string>
+    <string name="results_header_loss">Loss</string>
+    <string name="results_header_for">For</string>
+    <string name="results_header_against">Against</string>
+    <string name="results_header_net_score">+/-</string>
+    <string name="results_header_points">Points</string>
+    <string name="placeholder_x">X</string>
 </resources>
