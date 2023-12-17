@@ -3,8 +3,14 @@ package com.oceanscurse.groupstagesimulator.model
 /**
  * Created by Raymond de la Croix on 13/12/2023.
  */
-data class GroupStage(
+class GroupStage(
     val id: Int,
-    var rounds: List<Round>,
+    var rounds: MutableList<Round>,
     var results: List<Result>
-)
+) {
+    fun copy(): GroupStage {
+        return GroupStage(
+            id, rounds, results
+        )
+    }
+}

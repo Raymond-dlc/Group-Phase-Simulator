@@ -32,9 +32,9 @@ class PlayersRepository {
             val names = Constants.playerNames.shuffled()
 
             for (i in 0 until 11) {
-                val strength = Random.nextInt(12, 20)
-                val speed = Random.nextInt(12, 20)
-                val defence = Random.nextInt(12, 20)
+                val strength = Random.nextInt(12, 22)
+                val speed = Random.nextInt(12, 22)
+                val defence = Random.nextInt(12, 22)
                 val player = Player(names[i], strength, speed, defence, teamId)
                 newPlayers.add(player)
             }

@@ -80,7 +80,7 @@ class SimulatorFragment : Fragment() {
 
     private fun setupRounds() {
         val roundsAdapter = RoundsAdapter(mRecyclerViewRounds) {
-            println("clicked round: $it")
+            mSimulatorViewModel.playRound(it)
         }
         binding.rvRounds.apply {
             adapter = roundsAdapter

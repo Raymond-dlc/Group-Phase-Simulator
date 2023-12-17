@@ -10,4 +10,8 @@ data class Team(
     val players: List<Player>
 ) {
     fun isComplete(): Boolean = name.isNotBlank() && players.isNotEmpty()
+    fun totalStrength(): Int = players.sumOf { it.strength }
+    fun totalSpeed(): Int = players.sumOf { it.speed }
+    fun totalDefence(): Int = players.sumOf { it.defence }
+    fun totalTeamPoints(): Int = players.sumOf { it.strength + it.speed + it.defence }
 }

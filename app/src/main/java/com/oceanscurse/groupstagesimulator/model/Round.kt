@@ -6,5 +6,5 @@ package com.oceanscurse.groupstagesimulator.model
 data class Round(
     val id: Int,
     val matches: List<Match>,
-    val isPlayed: Boolean = false
+    var isPlayed: Boolean = false
 )
