@@ -170,6 +170,15 @@ class SimulatorViewModel : ViewModel() {
         return Pair(homeTeamScore, awayTeamScore)
     }
 
+    /**
+     * Updates the standings depending on the played round's result.
+     * Winner gets 2 points.
+     * Tiebreakers give both teams 1 point.
+     * Loser gets 0 points.
+     *
+     * Increments the times played for both teams.
+     * Adds to goals for and against, and updates the net score.
+     */
     private fun updateStandings(playedRound: Round) {
         playedRound.matches.forEach { match ->
             val homeTeamResults = mGroupStage.results.find { it.team.id == match.homeTeam?.id }
@@ -255,7 +264,7 @@ class SimulatorViewModel : ViewModel() {
         })
 
         mGroupStage.results.forEachIndexed { index, result ->
-            result.position = index + 1;
+            result.position = index + 1
         }
     }
 
