@@ -23,6 +23,9 @@ import com.oceanscurse.groupstagesimulator.utilities.toPixels
 
 /**
  * Created by Raymond de la Croix on 17-12-2023.
+ *
+ * An adapter for rendering a list of R.layout.vh_round. Shows an overview of the rounds
+ * and displays the teams with the scores. Has a button to play the round.
  */
 class RoundsAdapter(
     private val dataSet: List<Round>,

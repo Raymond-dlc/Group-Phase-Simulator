@@ -62,6 +62,13 @@
                 android:text="@string/simulator_rounds_title"
                 android:textAppearance="@style/title" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/simulator_instructions"
+                android:textAppearance="@style/caption" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">

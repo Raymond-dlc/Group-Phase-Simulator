@@ -7,7 +7,7 @@ object Constants {
     const val NUM_COMPETING_TEAMS = 4
     const val NUM_ROUNDS = 3
     const val NUM_MATCHES_PER_ROUND = 2
-    const val HOME_TEAM_ADVANTAGE_POINTS = 5
+    const val HOME_TEAM_ADVANTAGE_POINTS = 3
 
     val logosResourceIds = mutableListOf(
         R.drawable.logo_1,

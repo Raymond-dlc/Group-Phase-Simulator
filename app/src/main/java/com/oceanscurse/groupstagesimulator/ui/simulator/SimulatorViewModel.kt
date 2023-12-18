@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
 import kotlin.random.Random
 
 class SimulatorViewModel : ViewModel() {
@@ -27,6 +30,7 @@ class SimulatorViewModel : ViewModel() {
      */
     fun checkConditions() {
         val meetsRequirements = TeamsRepository.getTeams().size >= Constants.NUM_COMPETING_TEAMS
+
         if (meetsRequirements) {
             reset()
         }
@@ -142,11 +146,18 @@ class SimulatorViewModel : ViewModel() {
     fun calculateScore(homeTeam: Team, awayTeam: Team): Pair<Int, Int> {
         val homeTotalPoints = homeTeam.totalTeamPoints() + Constants.HOME_TEAM_ADVANTAGE_POINTS
         val awayTotalPoints = awayTeam.totalTeamPoints()
-        val teamPointsDifference = abs(homeTotalPoints - awayTotalPoints)
-        val homeShotsOnGoal: Int = ((homeTotalPoints / awayTotalPoints.toFloat()) * teamPointsDifference).toInt()
-        val awayShotsOnGoal: Int = ((awayTotalPoints / homeTotalPoints.toFloat()) * teamPointsDifference).toInt()
-        val homeScoreChance: Float = teamPointsDifference / awayTotalPoints.toFloat()
-        val awayScoreChance: Float = teamPointsDifference / homeTotalPoints.toFloat()
+
+        val strongTeamChances = (max(homeTotalPoints, awayTotalPoints) / min(homeTotalPoints, awayTotalPoints).toDouble())
+        val weakTeamChances = 1 - (strongTeamChances - 1)
+
+        val homeMultiplier = if (homeTotalPoints > awayTotalPoints) strongTeamChances else weakTeamChances
+        val awayMultiplier = if (awayTotalPoints > homeTotalPoints) strongTeamChances else weakTeamChances
+
+        val homeShotsOnGoal: Int = (15 * (homeMultiplier).pow(5)).toInt()
+        val awayShotsOnGoal: Int = (15 * (awayMultiplier).pow(5)).toInt()
+
+        val homeScoreChance: Double = 0.1 * (homeMultiplier).pow(10)
+        val awayScoreChance: Double = 0.1 * (awayMultiplier).pow(10)
 
         var homeTeamScore = 0
         var awayTeamScore = 0
