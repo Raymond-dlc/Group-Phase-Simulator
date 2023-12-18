@@ -236,6 +236,21 @@ class SimulatorViewModel : ViewModel() {
             if (resultB.goalsAgainst < resultA.goalsAgainst) return@Comparator 1
 
             // Head 2 head
+            var winsA = 0
+            var winsB = 0
+            mGroupStage.rounds.forEach { round ->
+                round.matches.forEach { match ->
+                    if ((match.homeTeam?.id == resultA.team.id && match.awayTeam?.id == resultB.team.id)) {
+                        if (match.homeTeamScore > match.awayTeamScore) {
+                            winsA++
+                        } else if (match.homeTeamScore < match.awayTeamScore) {
+                            winsB++
+                        }
+                    }
+                }
+            }
+            if (winsA > winsB) return@Comparator -1
+            if (winsB > winsA) return@Comparator 1
             return@Comparator 0
         })
 
