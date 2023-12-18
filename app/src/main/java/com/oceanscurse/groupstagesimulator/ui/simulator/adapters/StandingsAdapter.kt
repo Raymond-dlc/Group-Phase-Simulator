@@ -28,7 +28,7 @@ class StandingsAdapter(
 
     // A header view holder that indicated the names of the values in the table.
     // This header does not hold any dynamic values, the texts are set in R.layout.vh_player_header.
-    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {}
+    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     class ResultViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvPosition: TextView
@@ -41,6 +41,7 @@ class StandingsAdapter(
         private val tvAgainst: TextView
         private val tvNetScore: TextView
         private val tvPoints: TextView
+        private val llBackground: View
 
         init {
             tvPosition = view.findViewById(R.id.tv_position)
@@ -53,11 +54,11 @@ class StandingsAdapter(
             tvAgainst = view.findViewById(R.id.tv_against)
             tvNetScore = view.findViewById(R.id.tv_net_score)
             tvPoints = view.findViewById(R.id.tv_points)
+            llBackground = view.findViewById(R.id.ll_background)
         }
 
         @SuppressLint("SetTextI18n")
         fun bind(result: Result) {
-            println("bind for team: ${result.team.name}")
             tvPosition.text = "${result.position}."
             tvTeamName.text = "${result.team.name} (${result.team.totalTeamPoints()})"
             tvPlayed.text = result.timesPlayed.toString()
@@ -68,6 +69,13 @@ class StandingsAdapter(
             tvAgainst.text = result.goalsAgainst.toString()
             tvNetScore.text = result.netScore.toString()
             tvPoints.text = result.points.toString()
+
+            llBackground.setBackgroundColor(
+                llBackground.context.getColor(
+                    if (result.position < 3 && result.timesPlayed > 0) R.color.winner_green
+                    else R.color.white
+                )
+            )
         }
     }
 

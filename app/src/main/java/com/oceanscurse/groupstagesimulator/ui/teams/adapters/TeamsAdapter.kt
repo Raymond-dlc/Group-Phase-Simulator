@@ -23,12 +23,14 @@ class TeamsAdapter(
     class ViewHolder(view: View, onItemClicked: (Team) -> Unit) : RecyclerView.ViewHolder(view) {
         private val tvTeamName: TextView
         private val ivTeamImage: ImageView
+        private val tvTeamPoints: TextView
 
         private var currentTeam: Team? = null
 
         init {
             tvTeamName = view.findViewById(R.id.tv_team_name)
             ivTeamImage = view.findViewById(R.id.iv_team_image)
+            tvTeamPoints = view.findViewById(R.id.tv_team_points)
             view.setOnClickListener {
                 currentTeam?.let {
                     onItemClicked(it)
@@ -38,9 +40,16 @@ class TeamsAdapter(
 
         fun bind(team: Team) {
             currentTeam = team
-            tvTeamName.text = if (!team.isComplete()) tvTeamName.context.getString(R.string.teams_add_team) else team.name
             ivTeamImage.setImageResource(team.logoResourceId)
-            ivTeamImage.alpha = if (!team.isComplete()) 0.2f else 1.0f
+            if (team.isComplete()) {
+                tvTeamName.text = team.name
+                ivTeamImage.alpha = 1.0f
+                tvTeamPoints.text = tvTeamName.context.getString(R.string.teams_team_points, team.totalTeamPoints())
+            } else {
+                tvTeamName.text = tvTeamName.context.getString(R.string.teams_add_team)
+                ivTeamImage.alpha = 0.2f
+                tvTeamPoints.text = ""
+            }
         }
     }
 

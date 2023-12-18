@@ -2,6 +2,8 @@ package com.oceanscurse.groupstagesimulator.ui.simulator.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +11,14 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.oceanscurse.groupstagesimulator.Constants
 import com.oceanscurse.groupstagesimulator.R
 import com.oceanscurse.groupstagesimulator.model.Round
+import com.oceanscurse.groupstagesimulator.model.hasTeamsAssigned
 import com.oceanscurse.groupstagesimulator.utilities.toPixels
 
 /**
@@ -29,11 +34,17 @@ class RoundsAdapter(
         private val llRoundLines: LinearLayout
         private val btnPlay: Button
         private var currentRound: Round? = null
+        private var celebrationIcon: Drawable?
 
         init {
+            val iconSize = 16.toPixels(view.resources)
+
             rvRoundTitle = view.findViewById(R.id.tv_round_title)
             llRoundLines = view.findViewById(R.id.ll_round_lines)
             btnPlay = view.findViewById(R.id.btn_play)
+            celebrationIcon = ContextCompat.getDrawable(view.context, R.drawable.ic_celebration)
+            celebrationIcon?.setBounds(0, 0, iconSize, iconSize)
+
             for (i in 0 until Constants.NUM_MATCHES_PER_ROUND) {
                 llRoundLines.addView(createMatchLine(llRoundLines.context))
             }
@@ -49,16 +60,30 @@ class RoundsAdapter(
             rvRoundTitle.text = rvRoundTitle.context.getString(R.string.simulator_round_plus_number, round.id + 1)
             round.matches.forEachIndexed { index, match ->
                 // index is offset by 2 due to the round title and the header.
-                ((llRoundLines[index + 2] as ConstraintLayout)[0] as TextView).text = match.homeTeam?.name
-                ((llRoundLines[index + 2] as ConstraintLayout)[1] as TextView).text = if (round.isPlayed) {
+                val tvHome = ((llRoundLines[index + 2] as ConstraintLayout)[0] as TextView)
+                val tvScore = ((llRoundLines[index + 2] as ConstraintLayout)[1] as TextView)
+                val tvAway = ((llRoundLines[index + 2] as ConstraintLayout)[2] as TextView)
+
+                tvHome.text = match.homeTeam?.name
+                tvAway.text = match.awayTeam?.name
+                tvScore.text = if (round.isPlayed) {
                     "${match.homeTeamScore} - ${match.awayTeamScore}"
                 } else {
                     "X - X"
                 }
-                ((llRoundLines[index + 2] as ConstraintLayout)[2] as TextView).text = match.awayTeam?.name
+
+                tvHome.setCompoundDrawablesRelative(null, null, null, null)
+                tvAway.setCompoundDrawablesRelative(null, null, null, null)
+
+                if (match.homeTeamScore > match.awayTeamScore) {
+                    tvHome.setCompoundDrawablesRelative(null, null, celebrationIcon, null)
+                } else if (match.homeTeamScore < match.awayTeamScore) {
+                    tvAway.setCompoundDrawablesRelative(celebrationIcon, null, null, null)
+                }
             }
 
-            btnPlay.visibility = if (round.isPlayed) View.GONE else View.VISIBLE
+            btnPlay.isEnabled = !round.isPlayed && round.hasTeamsAssigned()
+            btnPlay.text = btnPlay.context.getString(if (round.isPlayed) R.string.simulator_played else R.string.simulator_play)
         }
 
         /**
@@ -131,17 +156,19 @@ class RoundsAdapter(
 
 
     // Create new views (invoked by the layout manager)
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RoundsAdapter.ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_round, viewGroup, false)
-        return RoundsAdapter.ViewHolder(view, onItemClicked)
+        return ViewHolder(view, onItemClicked)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(viewHolder: RoundsAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.bind(dataSet[position])
     }
 
     override fun getItemCount() = dataSet.size
 
 }
+
+

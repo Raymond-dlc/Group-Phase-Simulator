@@ -20,20 +20,21 @@ class SimulatorViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(SimulatorUiState())
     val uiState: StateFlow<SimulatorUiState> = _uiState.asStateFlow()
+
+    /**
+     * Checks if the simulator meets the conditions to start. For now this only means if there's
+     * enough teams created.
+     */
     fun checkConditions() {
         val meetsRequirements = TeamsRepository.getTeams().size >= Constants.NUM_COMPETING_TEAMS
-
         if (meetsRequirements) {
-            if (mGroupStage.rounds.isEmpty()) {
-                generateRounds()
-                assignTeams()
-            }
+            reset()
         }
 
         _uiState.update {
             it.copy(
                 groupStage = mGroupStage,
-                meetsRequirements = TeamsRepository.getTeams().size >= Constants.NUM_COMPETING_TEAMS
+                meetsRequirements = meetsRequirements
             )
         }
     }
@@ -53,8 +54,42 @@ class SimulatorViewModel : ViewModel() {
             }
         }
 
+        mGroupStage.results.clear()
         teams.forEachIndexed { index, team ->
             mGroupStage.results.add(Result(index + 1, team))
+        }
+
+        _uiState.update {
+            it.copy(
+                groupStage = mGroupStage.copy(),
+            )
+        }
+    }
+
+    fun reset() {
+        val meetsRequirements = TeamsRepository.getTeams().size >= Constants.NUM_COMPETING_TEAMS
+        mGroupStage = GroupStage(0, mutableListOf(), mutableListOf())
+
+        if (meetsRequirements) {
+            if (mGroupStage.rounds.isEmpty()) {
+                generateRounds()
+            }
+        }
+
+        _uiState.update {
+            it.copy(
+                groupStage = mGroupStage.copy(),
+                meetsRequirements = TeamsRepository.getTeams().size >= Constants.NUM_COMPETING_TEAMS
+            )
+        }
+    }
+
+    /**
+     * Will automatically play each round that's in the group stage.
+     */
+    fun playEntireGroupStage() {
+        mGroupStage.rounds.forEach {
+            playRound(it.id)
         }
     }
 
@@ -82,6 +117,9 @@ class SimulatorViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Will play out a match, calculating the scores for both teams.
+     */
     fun playMatch(match: Match) {
         val score = calculateScore(match.homeTeam!!, match.awayTeam!!)
         match.homeTeamScore = score.first
@@ -110,8 +148,8 @@ class SimulatorViewModel : ViewModel() {
         val homeScoreChance: Float = teamPointsDifference / awayTotalPoints.toFloat()
         val awayScoreChance: Float = teamPointsDifference / homeTotalPoints.toFloat()
 
-        var homeTeamScore = 0;
-        var awayTeamScore = 0;
+        var homeTeamScore = 0
+        var awayTeamScore = 0
 
         for (i in 0 until homeShotsOnGoal) {
             // Shot
@@ -180,7 +218,7 @@ class SimulatorViewModel : ViewModel() {
      * 5. Head 2 head result
      */
     private fun sortStandings() {
-        mGroupStage.results.sortWith(Comparator<Result> { resultA, resultB ->
+        mGroupStage.results.sortWith(Comparator { resultA, resultB ->
             // points
             if (resultA.points > resultB.points) return@Comparator -1
             if (resultB.points > resultA.points) return@Comparator 1

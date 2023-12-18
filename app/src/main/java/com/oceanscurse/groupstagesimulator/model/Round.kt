@@ -8,3 +8,7 @@ data class Round(
     val matches: List<Match>,
     var isPlayed: Boolean = false
 )
+
+fun Round.hasTeamsAssigned(): Boolean {
+    return matches.all { it.homeTeam != null && it.awayTeam != null }
+}

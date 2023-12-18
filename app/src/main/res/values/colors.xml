@@ -10,4 +10,5 @@
     <color name="divider">#FFDFDFDF</color>
     <color name="icon_grey">#606060</color>
     <color name="body_text">#282828</color>
+    <color name="winner_green">#B0EAAA</color>
 </resources>
