@@ -31,7 +31,10 @@ import kotlinx.coroutines.launch
 class TeamsFragment : Fragment(), MenuProvider {
 
     companion object {
-        const val ACTION_CREATE_TEAMS = 72638476
+        /**
+         * Identifier for the actionbar icon to create the teams.
+         */
+        const val ACTION_CREATE_TEAMS = 0
     }
 
     private var _binding: FragmentTeamsBinding? = null
@@ -46,15 +49,29 @@ class TeamsFragment : Fragment(), MenuProvider {
 
         setupMenu()
         setupViewModel()
-        setupListeners()
+        setupTeams()
         return root
     }
 
+    /**
+     * Add this fragment as a MenuProvider to the menu host.
+     */
     private fun setupMenu() {
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    /**
+     * Sets up the viewModel and register for updates on the lifecycleScopes.
+     *
+     * Everytime the screen resumes, the viewModel is asked to refresh the teams,
+     * to make sure they are rendered.
+     *
+     * On each collection of the UiState the UI will:
+     * - Update the recyclerViewData with the teams.
+     * - If a team is filled, it will add the team.
+     * - If a team is not filled, it will add a new team without name or players.
+     */
     private fun setupViewModel() {
         mTeamsViewModel = ViewModelProvider(this)[TeamsViewModel::class.java]
 
@@ -83,33 +100,51 @@ class TeamsFragment : Fragment(), MenuProvider {
         }
     }
 
-    private fun setupListeners() {
-        val customAdapter = TeamsAdapter(mRecyclerViewData) { team ->
+    /**
+     * Sets up the teams recyclerView and adapter. The recyclerView has a grid layout manager
+     * to more easily space out the teams in the center. When clicking on a team, the user
+     * will be navigated to the details screen. The MainViewModel is referenced here to aid
+     * in sending the teamId over to the details screen.
+     */
+    private fun setupTeams() {
+        val teamsAdapter = TeamsAdapter(mRecyclerViewData) { team ->
             val mainViewModel: MainViewModel by activityViewModels()
             mainViewModel.editingTeamId = team.id
             Navigation.findNavController(binding.root).navigate(R.id.nav_team_details)
         }
 
         binding.rvTeams.apply {
-            adapter = customAdapter
+            adapter = teamsAdapter
             layoutManager = GridLayoutManager(context, 4)
         }
     }
 
+    /**
+     * Creates the menu. The teams fragment only contains one menu item, that will allow the
+     * user to quickly setup all teams, or shuffle them.
+     */
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menu.add(0, ACTION_CREATE_TEAMS, 0, getString(R.string.teams_add_team)).apply {
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
             iconTintList = ColorStateList.valueOf(Color.WHITE)
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_refresh)
         }
     }
 
+    /**
+     * Handles action bar items.
+     * ACTION_CREATE_TEAMS -> Will trigger the viewModel to create teams.
+     */
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        if (menuItem.itemId == ACTION_CREATE_TEAMS)
+        if (menuItem.itemId == ACTION_CREATE_TEAMS) {
             mTeamsViewModel.createTeams()
+        }
         return false
     }
 
+    /**
+     * Binding cleanup.
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

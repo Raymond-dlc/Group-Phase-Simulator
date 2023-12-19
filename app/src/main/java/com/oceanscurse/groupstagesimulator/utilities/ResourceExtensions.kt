@@ -7,7 +7,7 @@ import android.util.TypedValue
 /**
  * Created by Raymond de la Croix on 17-12-2023.
  */
-class ResourceExtensions {}
+class ResourceExtensions
 
 /**
  * Converts this integer assuming it is a pixel value to the dp equivalent.

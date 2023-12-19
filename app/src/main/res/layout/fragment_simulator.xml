@@ -75,6 +75,7 @@
 
                 <Button
                     android:id="@+id/btn_assign_teams"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -82,6 +83,7 @@
 
                 <Button
                     android:id="@+id/btn_play_all"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"

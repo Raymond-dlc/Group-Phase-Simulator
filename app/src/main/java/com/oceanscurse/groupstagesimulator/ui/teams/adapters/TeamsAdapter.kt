@@ -18,7 +18,9 @@ class TeamsAdapter(
 ) : RecyclerView.Adapter<TeamsAdapter.ViewHolder>() {
 
     /**
-     * Provide a reference to the type of views that you are using (custom ViewHolder)
+     * A ViewHolder for a team that shows it's logo, name and points.
+     * Adds a OnClickListener to the whole view, and return it with the team
+     * that was clicked.
      */
     class ViewHolder(view: View, onItemClicked: (Team) -> Unit) : RecyclerView.ViewHolder(view) {
         private val tvTeamName: TextView
@@ -38,6 +40,11 @@ class TeamsAdapter(
             }
         }
 
+        /**
+         * Binds the data of the team to the view. Depending on if the team is complete,
+         * it will show the Name Logo and points. Otherwise will show a call to action
+         * for the user to add a team. Logo is set to low transparency to indicate a vacant slot.
+         */
         fun bind(team: Team) {
             currentTeam = team
             ivTeamImage.setImageResource(team.logoResourceId)
@@ -53,19 +60,26 @@ class TeamsAdapter(
         }
     }
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create new views (invoked by the layout manager).
+     * Forwards the onClickLister to the ViewHolder.
+     */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_team, viewGroup, false)
         return ViewHolder(view, onItemClicked)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Triggers the viewHolder to bind the data.
+     */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.bind(dataSet[position])
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    /**
+     * Return the size of your dataset (invoked by the layout manager).
+     */
     override fun getItemCount() = dataSet.size
 
 }

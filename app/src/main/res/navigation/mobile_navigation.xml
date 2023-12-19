@@ -22,12 +22,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_results"
-        android:name="com.oceanscurse.groupstagesimulator.ui.results.ResultsFragment"
-        android:label="@string/menu_results"
-        tools:layout="@layout/fragment_results" />
-
-    <fragment
         android:id="@+id/nav_team_details"
         android:name="com.oceanscurse.groupstagesimulator.ui.teams.TeamDetailsFragment"
         android:label="@string/menu_team_details"

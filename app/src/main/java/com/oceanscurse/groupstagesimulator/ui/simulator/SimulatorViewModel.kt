@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -70,6 +69,10 @@ class SimulatorViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Resets the simulation by creating a new groupStage with empty rounds and results.
+     * After that, the UiState will be updated with the empty GroupStage.
+     */
     fun reset() {
         val meetsRequirements = TeamsRepository.getTeams().size >= Constants.NUM_COMPETING_TEAMS
         mGroupStage = GroupStage(0, mutableListOf(), mutableListOf())

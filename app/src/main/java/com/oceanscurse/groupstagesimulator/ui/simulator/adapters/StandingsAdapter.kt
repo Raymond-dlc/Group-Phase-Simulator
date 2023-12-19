@@ -21,15 +21,25 @@ class StandingsAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
+        /**
+         * Identifier for the header view type
+         */
         const val VIEW_TYPE_HEADER = 0
+        /**
+         * Identifier for the player view type
+         */
         const val VIEW_TYPE_RESULT = 1
-        val xPositions = mutableListOf<Float>()
     }
 
-    // A header view holder that indicated the names of the values in the table.
-    // This header does not hold any dynamic values, the texts are set in R.layout.vh_player_header.
+    /**
+     * A header ViewHolder that indicated the names of the values in the table.
+     * This header does not hold any dynamic values, the texts are set in R.layout.vh_result_header.
+     */
     class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
+    /**
+     * A ViewHolder for a team's result that shows the team's name and scores.
+     */
     class ResultViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvPosition: TextView
         private val tvTeamName: TextView
@@ -79,15 +89,20 @@ class StandingsAdapter(
         }
     }
 
+    /**
+     * Gets the view type depending on the position on the item. The first row will always be the
+     * header, otherwise a player row.
+     */
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) return VIEW_TYPE_HEADER;
-        return VIEW_TYPE_RESULT;
+        if (position == 0) return VIEW_TYPE_HEADER
+        return VIEW_TYPE_RESULT
     }
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create new views (invoked by the layout manager). Depending on the view type will create
+     * a header row view or a result row view.
+     */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        // Create a new view, which defines the UI of the list item
-
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_result_header, viewGroup, false))
             VIEW_TYPE_RESULT -> ResultViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_result, viewGroup, false))
@@ -97,7 +112,10 @@ class StandingsAdapter(
         }
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Triggers the viewHolder to bind the data, if there is any. Since there is no data for the
+     * header view, it will be null.
+     */
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (viewHolder is ResultViewHolder) {
             dataSet[position]?.let {
@@ -106,6 +124,9 @@ class StandingsAdapter(
         }
     }
 
+    /**
+     * Return the size of your dataset (invoked by the layout manager).
+     */
     override fun getItemCount() = dataSet.size
 
 }

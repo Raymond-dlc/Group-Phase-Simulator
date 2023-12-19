@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import com.oceanscurse.groupstagesimulator.R
 import com.oceanscurse.groupstagesimulator.model.Player
@@ -17,23 +16,25 @@ class PlayersAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
+        /**
+         * Identifier for the header view type
+         */
         const val VIEW_TYPE_HEADER = 0
+        /**
+         * Identifier for the player view type
+         */
         const val VIEW_TYPE_PLAYER = 1
-        val xPositions = mutableListOf<Float>()
     }
 
-    // A header view holder that indicated the names of the values in the table.
-    // This header does not hold any dynamic values, the texts are set in R.layout.vh_player_header.
-    // To make sure the values are aligned properly with the headers, independent of language or
-    // screen size, the x values are cached and set to the textViews. Number of children have to match.
-    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        init {
-            view.post {
-                xPositions.addAll((view as ViewGroup).children.map { it.x })
-            }
-        }
-    }
+    /**
+     * A header ViewHolder that indicated the names of the values in the table.
+     * This header does not hold any dynamic values, the texts are set in R.layout.vh_player_header.
+     */
+    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
+    /**
+     * A ViewHolder for a player that shows their name and values.
+     */
     class PlayerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvPlayerName: TextView
         private val tvPlayerStrength: TextView
@@ -45,19 +46,11 @@ class PlayersAdapter(
             tvPlayerStrength = view.findViewById(R.id.tv_player_strength)
             tvPlayerSpeed = view.findViewById(R.id.tv_player_speed)
             tvPlayerDefence = view.findViewById(R.id.tv_player_defence)
-            tvPlayerName.visibility = View.GONE
-            tvPlayerStrength.visibility = View.GONE
-            tvPlayerSpeed.visibility = View.GONE
-            tvPlayerDefence.visibility = View.GONE
-
-            view.post {
-                (view as ViewGroup).children.forEachIndexed { index, valueView ->
-                    valueView.x = xPositions[index]
-                    valueView.visibility = View.VISIBLE
-                }
-            }
         }
 
+        /**
+         * Sets the player's name and individual values.
+         */
         fun bind(player: Player) {
             tvPlayerName.text = player.name
             tvPlayerStrength.text = "${player.strength}"
@@ -66,15 +59,21 @@ class PlayersAdapter(
         }
     }
 
+    /**
+     * Gets the view type depending on the position on the item. The first row will always be the
+     * header, otherwise a player row.
+     */
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) return VIEW_TYPE_HEADER;
-        return VIEW_TYPE_PLAYER;
+        if (position == 0) return VIEW_TYPE_HEADER
+        return VIEW_TYPE_PLAYER
     }
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create new views (invoked by the layout manager). Depending on the view type will create
+     * a header row view or a player row view.
+     */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         // Create a new view, which defines the UI of the list item
-
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_player_header, viewGroup, false))
             VIEW_TYPE_PLAYER -> PlayerViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_player, viewGroup, false))
@@ -84,7 +83,10 @@ class PlayersAdapter(
         }
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Triggers the viewHolder to bind the data, if there is any. Since there is no data for the
+     * header view, it will be null.
+     */
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (viewHolder is PlayerViewHolder) {
             dataSet[position]?.let {
@@ -93,6 +95,9 @@ class PlayersAdapter(
         }
     }
 
+    /**
+     * Return the size of your dataset (invoked by the layout manager).
+     */
     override fun getItemCount() = dataSet.size
 
 }

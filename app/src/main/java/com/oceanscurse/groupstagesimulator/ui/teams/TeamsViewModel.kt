@@ -1,9 +1,8 @@
 package com.oceanscurse.groupstagesimulator.ui.teams
 
 import androidx.lifecycle.ViewModel
-import com.oceanscurse.groupstagesimulator.R
+import com.oceanscurse.groupstagesimulator.Constants
 import com.oceanscurse.groupstagesimulator.data.TeamsRepository
-import com.oceanscurse.groupstagesimulator.model.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,31 +15,26 @@ class TeamsViewModel : ViewModel() {
     )
     val uiState: StateFlow<TeamsUiState> = _uiState.asStateFlow()
 
-    fun addTeam() {
-        TeamsRepository.addTeam(Team(0, "Team A", R.drawable.logo_1, listOf()))
-        _uiState.update {
-            it.copy(
-                teams = TeamsRepository.getTeams()
-            )
-        }
-    }
 
+    /**
+     * Refreshes the team with a copy of the uiState, to make sure the UI updates.
+     */
     fun refreshTeams() {
         val teams = TeamsRepository.getTeams()
         _uiState.update {
-            it.copy(
-                teams = teams,
-                isComplete = teams.size > 3
-            )
+            it.copy(teams = teams)
         }
     }
 
-    // Will create 4 team instantly, to more quickly get started with the simulation.
+    /**
+     * Will create teams instantly, to more quickly get started with the simulation.
+     * The number of team depends on the constant NUM_COMPETING_TEAMS
+     * Depending on if the team already exists, it will be overridden.
+     */
     fun createTeams() {
-        TeamsRepository.createFullTeam(0)
-        TeamsRepository.createFullTeam(1)
-        TeamsRepository.createFullTeam(2)
-        TeamsRepository.createFullTeam(3)
+        for (i in 0 until Constants.NUM_COMPETING_TEAMS) {
+            TeamsRepository.createFullTeam(i)
+        }
         refreshTeams()
     }
 }

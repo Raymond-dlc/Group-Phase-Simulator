@@ -2,7 +2,6 @@ package com.oceanscurse.groupstagesimulator.ui.simulator.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.oceanscurse.groupstagesimulator.Constants
@@ -32,6 +30,15 @@ class RoundsAdapter(
     private val onItemClicked: (Int) -> Unit
 ) : RecyclerView.Adapter<RoundsAdapter.ViewHolder>() {
 
+    /**
+     * A ViewHolder for a round that shows the teams, scores and has a button to
+     * have the round play out. Creates the lines for the teams dynamically based on
+     * the number of matches per round as defined in Constants.NUM_MATCHES_PER_ROUND.
+     *
+     * Sets the icon size to be a bit smaller, to better fit the design.
+     *
+     * Adds a click listener for the play button, and will forward which round id has been clicked.
+     */
     class ViewHolder(view: View, onItemClicked: (Int) -> Unit) : RecyclerView.ViewHolder(view) {
         private val rvRoundTitle: TextView
         private val llRoundLines: LinearLayout
@@ -57,6 +64,14 @@ class RoundsAdapter(
             }
         }
 
+        /**
+         * Binds the view data of the round to the view.
+         * - Sets the team names and the score.
+         *      - If the round isn't played yet, will show X - X.
+         * - Adds a icon to the winning team.
+         * - Updates play button depending on if the round has been played.
+         * @param round The round to show.
+         */
         @SuppressLint("SetTextI18n")
         fun bind(round: Round) {
             currentRound = round
@@ -158,18 +173,26 @@ class RoundsAdapter(
     }
 
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create new views (invoked by the layout manager).
+     * Forwards the onClickLister to the ViewHolder.
+     */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.vh_round, viewGroup, false)
         return ViewHolder(view, onItemClicked)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Triggers the viewHolder to bind the data.
+     */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.bind(dataSet[position])
     }
 
+    /**
+     * Return the size of your dataset (invoked by the layout manager).
+     */
     override fun getItemCount() = dataSet.size
 
 }

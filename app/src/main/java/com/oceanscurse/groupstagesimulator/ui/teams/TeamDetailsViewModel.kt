@@ -4,31 +4,46 @@ import androidx.lifecycle.ViewModel
 import com.oceanscurse.groupstagesimulator.Constants
 import com.oceanscurse.groupstagesimulator.data.PlayersRepository
 import com.oceanscurse.groupstagesimulator.data.TeamsRepository
-import com.oceanscurse.groupstagesimulator.model.Exceptions.NameEmptyException
-import com.oceanscurse.groupstagesimulator.model.Exceptions.TeamEmptyException
+import com.oceanscurse.groupstagesimulator.model.exceptions.NameEmptyException
+import com.oceanscurse.groupstagesimulator.model.exceptions.TeamEmptyException
 import com.oceanscurse.groupstagesimulator.model.Player
 import com.oceanscurse.groupstagesimulator.model.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlin.random.Random
 
 class TeamDetailsViewModel : ViewModel() {
 
+    /**
+     * Cursor to keep track of which logo is currently selected.
+     */
     private var mCurrentLogoIndex = 0
+
+    /**
+     * A list that will hold the players that will be assigned to the team.
+     */
     private var mNewPlayers: MutableList<Player> = mutableListOf()
+
+    /**
+     * The name of the new team.
+     */
     private var mNewTeamName: String = ""
+
+    /**
+     * The id of the team that will be created or updated.
+     */
     private var mTeamId = 0
 
     private val _uiState = MutableStateFlow(TeamDetailsUiState())
     val uiState: StateFlow<TeamDetailsUiState> = _uiState.asStateFlow()
 
-    // Sets the team id for the viewModel and gets the correct team data from the
-    // repository
+    /**
+     * Sets the team id for the viewModel and gets the correct team data from the repository.
+     */
     fun setTeamId(editingTeamId: Int) {
         val team = TeamsRepository.getTeamById(editingTeamId)
-        mCurrentLogoIndex = Constants.logosResourceIds.indexOf(team?.logoResourceId).takeIf { it >= 0 } ?: 0
+        mCurrentLogoIndex = Constants.LOGO_RESOURCE_IDS.indexOf(team?.logoResourceId).takeIf { it >= 0 } ?: 0
         mNewPlayers = team?.players?.toMutableList() ?: mutableListOf()
         mNewTeamName = team?.name ?: ""
         mTeamId = editingTeamId
@@ -37,7 +52,7 @@ class TeamDetailsViewModel : ViewModel() {
             it.copy(
                 players = mNewPlayers,
                 teamName = mNewTeamName,
-                logoResourceId = Constants.logosResourceIds[mCurrentLogoIndex],
+                logoResourceId = Constants.LOGO_RESOURCE_IDS[mCurrentLogoIndex],
                 isSaved = false
             )
         }
@@ -49,7 +64,7 @@ class TeamDetailsViewModel : ViewModel() {
     fun selectPreviousLogo() {
         mCurrentLogoIndex--
         if (mCurrentLogoIndex < 0) {
-            mCurrentLogoIndex = Constants.logosResourceIds.size - 1
+            mCurrentLogoIndex = Constants.LOGO_RESOURCE_IDS.size - 1
         }
         updateLogo()
     }
@@ -59,7 +74,7 @@ class TeamDetailsViewModel : ViewModel() {
      */
     fun selectNextLogo() {
         mCurrentLogoIndex++
-        if (mCurrentLogoIndex >= Constants.logosResourceIds.size) {
+        if (mCurrentLogoIndex >= Constants.LOGO_RESOURCE_IDS.size) {
             mCurrentLogoIndex = 0
         }
         updateLogo()
@@ -77,11 +92,11 @@ class TeamDetailsViewModel : ViewModel() {
     /**
      * Will attempt to save the team to the repository.
      * Will only succeed if:
-     * - Team name is not empty. => Will return NameEmptyException in uiState's saveException
-     * - Player count is 11. => Will return TeamEmptyException in uiState's saveException
+     * - Team name is not empty. => Will return NameEmptyException in uiState's saveException.
+     * - Player count is 11. => Will return TeamEmptyException in uiState's saveException.
      */
     fun saveTeam() {
-        val team = Team(mTeamId, mNewTeamName, Constants.logosResourceIds[mCurrentLogoIndex], mNewPlayers)
+        val team = Team(mTeamId, mNewTeamName, Constants.LOGO_RESOURCE_IDS[mCurrentLogoIndex], mNewPlayers)
 
         if (team.name.isBlank()) {
             _uiState.update {
@@ -126,7 +141,7 @@ class TeamDetailsViewModel : ViewModel() {
      */
     private fun updateLogo() {
         _uiState.update {
-            it.copy(logoResourceId = Constants.logosResourceIds[mCurrentLogoIndex])
+            it.copy(logoResourceId = Constants.LOGO_RESOURCE_IDS[mCurrentLogoIndex])
         }
     }
 }
