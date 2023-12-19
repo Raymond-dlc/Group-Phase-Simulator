@@ -6,10 +6,16 @@
     android:orientation="vertical"
     tools:context=".ui.teams.TeamsFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/teams_instructions"
+        android:textAppearance="@style/caption" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_teams"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

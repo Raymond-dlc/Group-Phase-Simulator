@@ -6,4 +6,26 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="subtitle">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="caption">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="table_header">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="table_data">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/body_text</item>
+    </style>
+
 </resources>
