@@ -30,7 +30,8 @@ class SimulatorViewModel : ViewModel() {
     fun checkConditions() {
         val meetsRequirements = TeamsRepository.getTeams().size >= Constants.NUM_COMPETING_TEAMS
 
-        if (meetsRequirements) {
+        // If we didn't meet the requirement before, and now we do, reset to start a clean group stage.
+        if (!_uiState.value.meetsRequirements && meetsRequirements) {
             reset()
         }
 
