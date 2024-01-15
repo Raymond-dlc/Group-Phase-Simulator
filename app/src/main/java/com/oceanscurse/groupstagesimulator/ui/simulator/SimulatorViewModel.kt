@@ -48,15 +48,45 @@ class SimulatorViewModel : ViewModel() {
      */
     fun assignTeams() {
         val teams = TeamsRepository.getTeams()
+        val pairs = mutableListOf<Pair<Team, Team>>()
 
-        mGroupStage.rounds.forEach { round ->
-            teams.shuffle()
-            round.matches.forEachIndexed { index, match ->
-                match.homeTeam = teams[(index * 2) % Constants.NUM_COMPETING_TEAMS]
-                match.awayTeam = teams[((index * 2) + 1) % Constants.NUM_COMPETING_TEAMS]
+        // Form pairs
+        for (i in 0 until teams.size - 1) {
+            for (j in i + 1 until teams.size) {
+                pairs.add(Pair(teams[i], teams[j]))
             }
         }
 
+        // Some randomness to not have the same teams have home field advantage always.
+        pairs.forEachIndexed { index, pair ->
+            // 50% chance to swap the sides
+            if (Math.random() > 0.5f) {
+                pairs[index] = pair.copy(pair.second, pair.first)
+            }
+        }
+
+        // Assign the pairs to the matches
+        mGroupStage.rounds.forEach { round ->
+            round.matches.forEach { match ->
+                val assignedPairs = mutableListOf<Pair<Team, Team>>()
+                pairs.forEach { pair ->
+                    if (match.homeTeam == null) {
+                        val teamAlreadyPlaysInTheRound = round.matches.any {
+                            it.homeTeam == pair.first || it.awayTeam == pair.first || it.homeTeam == pair.second || it.awayTeam == pair.second
+                        }
+                        if (!teamAlreadyPlaysInTheRound) {
+                            match.homeTeam = pair.first
+                            match.awayTeam = pair.second
+                            assignedPairs.add(pair)
+                        }
+                    }
+                }
+                pairs.removeAll(assignedPairs)
+                assignedPairs.clear()
+            }
+        }
+
+        // Clear the results and add the new teams.
         mGroupStage.results.clear()
         teams.forEachIndexed { index, team ->
             mGroupStage.results.add(Result(index + 1, team))

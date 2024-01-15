@@ -16,7 +16,7 @@ data class Round(
     /**
      * The matches that will be played in this round.
      */
-    val matches: List<Match>,
+    val matches: MutableList<Match>,
 
     /**
      * Whether or not the round has already been played.
