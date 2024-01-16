@@ -20,7 +20,7 @@ import kotlin.random.Random
 class SimulatorViewModel : ViewModel() {
     private var mGroupStage: GroupStage = GroupStage(0, mutableListOf(), mutableListOf())
 
-    private val _uiState = MutableStateFlow(SimulatorUiState())
+    private val _uiState = MutableStateFlow(SimulatorUiState(groupStage = mGroupStage))
     val uiState: StateFlow<SimulatorUiState> = _uiState.asStateFlow()
 
     /**

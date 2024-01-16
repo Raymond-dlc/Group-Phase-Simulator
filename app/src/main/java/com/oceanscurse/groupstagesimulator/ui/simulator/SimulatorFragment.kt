@@ -84,20 +84,18 @@ class SimulatorFragment : Fragment(), MenuProvider {
                     binding.llEmptyState.visibility = if (uiState.meetsRequirements) View.GONE else View.VISIBLE
                     binding.svContent.visibility = if (uiState.meetsRequirements) View.VISIBLE else View.GONE
 
-                    uiState.groupStage?.let {
-                        binding.btnAssignTeams.isEnabled = it.rounds.any { round -> !round.hasTeamsAssigned() } || it.rounds.none { round -> round.isPlayed }
-                        binding.btnPlayAll.isEnabled = it.rounds.all { round -> !round.isPlayed } && it.rounds.all { round -> round.hasTeamsAssigned() }
+                    binding.btnAssignTeams.isEnabled = uiState.allowAssigning
+                    binding.btnPlayAll.isEnabled = uiState.allowPlayAll
 
-                        mRecyclerViewRounds.clear()
-                        mRecyclerViewRounds.addAll(uiState.groupStage.rounds)
-                        binding.rvRounds.adapter?.notifyDataSetChanged()
+                    mRecyclerViewRounds.clear()
+                    mRecyclerViewRounds.addAll(uiState.groupStage.rounds)
+                    binding.rvRounds.adapter?.notifyDataSetChanged()
 
-                        mRecyclerViewResults.clear()
-                        mRecyclerViewResults.add(null) // header
-                        mRecyclerViewResults.addAll(uiState.groupStage.results)
+                    mRecyclerViewResults.clear()
+                    mRecyclerViewResults.add(null) // header
+                    mRecyclerViewResults.addAll(uiState.groupStage.results)
 
-                        binding.rvStandings.adapter?.notifyDataSetChanged()
-                    }
+                    binding.rvStandings.adapter?.notifyDataSetChanged()
                 }
             }
         }
